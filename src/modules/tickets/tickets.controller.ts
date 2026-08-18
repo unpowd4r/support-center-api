@@ -8,9 +8,10 @@ import {
   getTicketMessages,
   getTicketStatusById,
   getTickets,
+  updateTicketStatus,
 } from "./tickets.service.js";
 
-import type { TicketPriority } from "./tickets.types.js";
+import type { TicketPriority, TicketStatus } from "./tickets.types.js";
 
 export const getTicketsController = (req: Request, res: Response) => {
   const tickets = getTickets();
@@ -47,6 +48,7 @@ export const createTicketController = (req: Request, res: Response) => {
     });
   }
 
+  //TODO: Добавить валидацию нового тикет статуса без as
   const ticket = createTicket(subject, priority as TicketPriority | undefined);
 
   res.status(201).json(ticket);
@@ -136,4 +138,23 @@ export const getTicketStatusController = (req: Request, res: Response) => {
   const status = getTicketStatusById(id);
 
   res.status(200).json(status);
+};
+
+export const updateTicketStatusController = (req: Request, res: Response) => {
+  const { id } = req.params;
+  const { newTicketStatus } = req.body;
+
+  if (typeof id !== "string" || id.trim() === "") {
+    return res.status(400).json({
+      message: "Неверный формат ID",
+    });
+  }
+
+  //TODO: Добавить валидацию нового тикет статуса без as
+  const updatedTicketStatus = updateTicketStatus(
+    id,
+    newTicketStatus as TicketStatus,
+  );
+
+  res.status(202).json(updatedTicketStatus);
 };

@@ -8,6 +8,7 @@ import {
   getTicketMessagesController,
   getTicketsController,
   getTicketStatusController,
+  updateTicketStatusController,
 } from "./tickets.controller.js";
 
 export const ticketsRouter = Router();
@@ -19,3 +20,4 @@ ticketsRouter.post("/:id/assign", assignTicketController);
 ticketsRouter.get("/:id/messages", getTicketMessagesController);
 ticketsRouter.post("/:id/messages", createTicketMessageController);
 ticketsRouter.get("/:id/status", getTicketStatusController);
+ticketsRouter.post("/:id/status", updateTicketStatusController);

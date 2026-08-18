@@ -2,7 +2,13 @@ import crypto from "node:crypto";
 
 import { messages, tickets } from "./tickets.store.ts";
 
-import type { Message, Ticket, TicketPriority } from "./tickets.types.ts";
+import type {
+  Message,
+  Ticket,
+  TicketPriority,
+  TicketStatus,
+} from "./tickets.types.ts";
+import { broadcast } from "../../realtime/realtime.service.ts";
 
 import {
   ticketAlreadyAssignedError,
@@ -36,6 +42,11 @@ export const createTicket = (
 
   tickets.push(ticket);
 
+  broadcast({
+    type: "ticket.created",
+    payload: ticket,
+  });
+
   return ticket;
 };
 
@@ -63,6 +74,11 @@ export const createOperatorMessage = (
     ticket.lastMessageAt = message.createdAt;
   }
 
+  broadcast({
+    type: "ticket.operatorSendMessage",
+    payload: message,
+  });
+
   return message;
 };
 
@@ -84,6 +100,11 @@ export const assignTicket = (ticketId: string, operatorId: string): Ticket => {
   ticket.assignedTo = operatorId;
   ticket.status = "IN_PROGRESS";
 
+  broadcast({
+    type: "ticket.operatorAssigned",
+    payload: ticket,
+  });
+
   return ticket;
 };
 
@@ -99,5 +120,28 @@ export const getTicketStatusById = (
   return {
     id: ticket.id,
     status: ticket.status,
+  };
+};
+
+export const updateTicketStatus = (
+  ticketId: string,
+  updateTicketStatus: Ticket["status"],
+): { id: string; status: Ticket["status"] } => {
+  const ticket = getTicketById(ticketId);
+
+  if (!ticket) {
+    throw ticketNotFoundError();
+  }
+
+  ticket.status = updateTicketStatus;
+
+  broadcast({
+    type: "ticket.statusUpdated",
+    payload: ticket,
+  });
+
+  return {
+    id: ticket.id,
+    status: updateTicketStatus,
   };
 };

@@ -175,6 +175,16 @@ export const swaggerDocument = {
         },
       },
 
+      UpdateTicketStatusRequest: {
+        type: "object",
+        required: ["newTicketStatus"],
+        properties: {
+          newTicketStatus: {
+            $ref: "#/components/schemas/TicketStatus",
+          },
+        },
+      },
+
       ValidationError: {
         type: "object",
         required: ["message"],
@@ -485,6 +495,57 @@ export const swaggerDocument = {
                 example: {
                   id: "1",
                   status: "IN_PROGRESS",
+                },
+              },
+            },
+          },
+          "400": {
+            $ref: "#/components/responses/BadRequest",
+          },
+          "404": {
+            $ref: "#/components/responses/NotFound",
+          },
+          "500": {
+            $ref: "#/components/responses/InternalServerError",
+          },
+        },
+      },
+
+      post: {
+        tags: ["Tickets"],
+        summary: "Обновить статус тикета",
+        description:
+          "Изменяет текущий статус тикета по ID и возвращает обновлённое состояние в компактном формате.",
+        parameters: [
+          {
+            $ref: "#/components/parameters/TicketId",
+          },
+        ],
+        requestBody: {
+          required: true,
+          description: "Новый статус тикета",
+          content: {
+            "application/json": {
+              schema: {
+                $ref: "#/components/schemas/UpdateTicketStatusRequest",
+              },
+              example: {
+                newTicketStatus: "RESOLVED",
+              },
+            },
+          },
+        },
+        responses: {
+          "202": {
+            description: "Статус тикета принят и обновлён",
+            content: {
+              "application/json": {
+                schema: {
+                  $ref: "#/components/schemas/TicketStatusResponse",
+                },
+                example: {
+                  id: "1",
+                  status: "RESOLVED",
                 },
               },
             },
