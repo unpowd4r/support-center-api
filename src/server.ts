@@ -2,10 +2,10 @@ import { createServer } from "node:http";
 
 import { app } from "./app.js";
 import { createWebSocketServer } from "./realtime/websocket.ts";
-
-const PORT = 3030;
+import { env } from "./config/env.ts";
 
 const server = createServer(app);
+const PORT = env.PORT;
 
 createWebSocketServer(server);
 
