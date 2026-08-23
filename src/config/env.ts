@@ -3,8 +3,8 @@ dotenv.config();
 
 export const env = {
   PORT: process.env.PORT || "3030",
+  SERVER_URL: process.env.SERVER_URL || "http://localhost:3030",
   CORS_ORIGINS: (() => {
-    // В режиме "development" отключаем CORS
     if (process.env.NODE_ENV === "development") {
       return "*";
     }

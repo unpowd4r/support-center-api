@@ -1,12 +1,6 @@
-import dotenv from "dotenv";
-dotenv.config();
+import { env } from "../config/env.ts";
 
-const getServerUrl = () => {
-  if (process.env.NODE_ENV === "production") {
-    return "https://support-center-api.onrender.com";
-  }
-  return "http://localhost:3030";
-};
+const apiUrl = env.SERVER_URL;
 
 export const swaggerDocument = {
   openapi: "3.0.0",
@@ -20,7 +14,7 @@ export const swaggerDocument = {
 
   servers: [
     {
-      url: getServerUrl(),
+      url: apiUrl,
       description:
         process.env.NODE_ENV === "production"
           ? "Production сервер"
